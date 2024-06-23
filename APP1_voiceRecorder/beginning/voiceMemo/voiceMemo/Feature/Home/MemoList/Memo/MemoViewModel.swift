@@ -5,6 +5,11 @@
 
 import Foundation
 
-class MemoViewModel {
+class MemoViewModel: ObservableObject {
+    @Published var memo: Memo
+    
+    init(memo: Memo) {
+        self.memo = memo
+    }
   
 }

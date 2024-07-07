@@ -15,8 +15,7 @@ struct OnboardingView: View {
         //TODO: - 화면 전환 구현 필요
         NavigationStack(path: $pathModel.paths) {
 //            OnboardingContentView(onboardingViewModel: onboardingViewModel)
-            VoiceRecorderView()
-                .environmentObject(memoListViewModel)
+            TimerView()
                 .navigationDestination(
                     for: PathType.self) { pathType in
                         switch pathType {

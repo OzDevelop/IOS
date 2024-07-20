@@ -14,14 +14,15 @@ struct OnboardingView: View {
     var body: some View {
         //TODO: - 화면 전환 구현 필요
         NavigationStack(path: $pathModel.paths) {
-//            OnboardingContentView(onboardingViewModel: onboardingViewModel)
-            TimerView()
+            OnboardingContentView(onboardingViewModel: onboardingViewModel)
                 .navigationDestination(
                     for: PathType.self) { pathType in
                         switch pathType {
                         case .homeView:
                             HomeView()
                                 .navigationBarBackButtonHidden()
+                                .environmentObject(todoListViewModel)
+                                .environmentObject(memoListViewModel)
                             
                         case .todoView:
                             TodoView()

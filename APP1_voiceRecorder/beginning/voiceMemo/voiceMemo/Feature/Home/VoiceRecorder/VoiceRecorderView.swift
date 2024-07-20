@@ -7,6 +7,7 @@ import SwiftUI
 
 struct VoiceRecorderView: View {
     @StateObject private var voiceRecorderViewModel = VoiceRecorderViewModel()
+    @EnvironmentObject private var homeViewModel: HomeViewModel
     
     
     var body: some View {
@@ -32,20 +33,25 @@ struct VoiceRecorderView: View {
                 .padding(.bottom, 50)
         }
         .alert(
-          "선택된 음성메모를 삭제하시겠습니까?",
-          isPresented: $voiceRecorderViewModel.isDisplayRemoveVoiceRecorderAlert
+            "선택된 음성메모를 삭제하시겠습니까?",
+            isPresented: $voiceRecorderViewModel.isDisplayRemoveVoiceRecorderAlert
         ) {
-          Button("삭제", role: .destructive) {
-            voiceRecorderViewModel.removeSelectedVoiceRecord()
-          }
-          Button("취소", role: .cancel) { }
+            Button("삭제", role: .destructive) {
+                voiceRecorderViewModel.removeSelectedVoiceRecord()
+            }
+            Button("취소", role: .cancel) { }
         }
         .alert(
-          voiceRecorderViewModel.alertMessage,
-          isPresented: $voiceRecorderViewModel.isDisplayAlert
+            voiceRecorderViewModel.alertMessage,
+            isPresented: $voiceRecorderViewModel.isDisplayAlert
         ) {
-          Button("확인", role: .cancel) { }
+            Button("확인", role: .cancel) { }
         }
+        .onChange(of: voiceRecorderViewModel.recordedFiles,
+                  perform: { recordedFiles in
+            homeViewModel.setVoiceRecordersCount(recordedFiles.count)
+        }
+        )
     }
     
 }
@@ -267,58 +273,58 @@ private struct VoiceRecorderCellView: View {
 
 // MARK: - 프로그레스 바
 private struct ProgressBar: View {
-  private var progress: Float
-  
-  fileprivate init(progress: Float) {
-    self.progress = progress
-  }
-  
-  fileprivate var body: some View {
-    GeometryReader { geometry in
-      ZStack(alignment: .leading) {
-        Rectangle()
-          .fill(Color.customGray2)
-        
-        Rectangle()
-          .fill(Color.customGreen)
-          .frame(width: CGFloat(self.progress) * geometry.size.width)
-      }
+    private var progress: Float
+    
+    fileprivate init(progress: Float) {
+        self.progress = progress
     }
-  }
+    
+    fileprivate var body: some View {
+        GeometryReader { geometry in
+            ZStack(alignment: .leading) {
+                Rectangle()
+                    .fill(Color.customGray2)
+                
+                Rectangle()
+                    .fill(Color.customGreen)
+                    .frame(width: CGFloat(self.progress) * geometry.size.width)
+            }
+        }
+    }
 }
 
 // MARK: - 녹음 버튼 뷰
 private struct RecordBtnView: View {
-  @ObservedObject private var voiceRecorderViewModel: VoiceRecorderViewModel
-  
-  fileprivate init(
-    voiceRecorderViewModel: VoiceRecorderViewModel
-  ) {
-    self.voiceRecorderViewModel = voiceRecorderViewModel
-  }
-  
-  fileprivate var body: some View {
-    VStack {
-      Spacer()
-      
-      HStack {
-        Spacer()
-        
-        Button(
-          action: {
-            voiceRecorderViewModel.recordBtnTapped()
-          },
-          label: {
-            if voiceRecorderViewModel.isRecording {
-              Image("mic_recording")
-            } else {
-              Image("mic")
-            }
-          }
-        )
-      }
+    @ObservedObject private var voiceRecorderViewModel: VoiceRecorderViewModel
+    
+    fileprivate init(
+        voiceRecorderViewModel: VoiceRecorderViewModel
+    ) {
+        self.voiceRecorderViewModel = voiceRecorderViewModel
     }
-  }
+    
+    fileprivate var body: some View {
+        VStack {
+            Spacer()
+            
+            HStack {
+                Spacer()
+                
+                Button(
+                    action: {
+                        voiceRecorderViewModel.recordBtnTapped()
+                    },
+                    label: {
+                        if voiceRecorderViewModel.isRecording {
+                            Image("mic_recording")
+                        } else {
+                            Image("mic")
+                        }
+                    }
+                )
+            }
+        }
+    }
 }
 
 

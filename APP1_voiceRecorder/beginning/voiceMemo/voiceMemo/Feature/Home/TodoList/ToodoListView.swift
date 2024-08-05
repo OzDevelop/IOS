@@ -11,9 +11,10 @@ struct TodoListView: View {
     @EnvironmentObject private var homeViewModel: HomeViewModel
     
     var body: some View {
-        ZStack {
-            // 투두 셀 리스트
-            
+        // 투두 셀 리스트
+        
+        // 방법 3
+        WriteBtnView {
             VStack {
                 if !todoListViewModel.todos.isEmpty {
                     CustomNavigationBar(
@@ -37,11 +38,38 @@ struct TodoListView: View {
                         .padding(.top, 20)
                 }
             }
-            
-            WriteTodoBtnView()
-                .padding(.trailing, 20)
-                .padding(.bottom, 50)
+        } action: {
+            pathModel.paths.append(.todoView)
         }
+        //        VStack {
+        //            if !todoListViewModel.todos.isEmpty {
+        //                CustomNavigationBar(
+        //                    isDisplayLeftBtn: false,
+        //                    rightBtnAction: {
+        //                        todoListViewModel.navigationRightBtnTapped()
+        //                    },
+        //                    rightBtnType: todoListViewModel.navigationBarRightBtnMode
+        //                )
+        //            } else {
+        //                Spacer()
+        //                    .frame(height: 30)
+        //            }
+        //            TitleView()
+        //                .padding(.top, 20)
+        //
+        //            if todoListViewModel.todos.isEmpty {
+        //                AnnouncementView()
+        //            } else {
+        //                TodolistContentView()
+        //                    .padding(.top, 20)
+        //            }
+        //        }
+        // 방법 1
+        //        .modifier(WriteBtnViewModifier(action: { pathModel.paths.append(.todoView) }))
+        // 방법 2
+        //        .writeBtn {
+        //            pathModel.paths.append(.todoView)
+        //        }
         .alert(
             "To do list \(todoListViewModel.removeTodosCount)개 삭제하시겠습니까?",
             isPresented: $todoListViewModel.isDisplayRemoveTodoAlert

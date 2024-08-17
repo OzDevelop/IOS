@@ -22,6 +22,8 @@ class LoginViewController: UIViewController {
     }
 
     @IBAction func buttonDidTap(_ sender: Any) {
+        // loginViewController와 Tabbar가 같은 Storyboard에 위치하고 있음. -> 스토리 보드를 가져와서 tabbar를 rootViewController로 만들어줌.
+        self.view.window?.rootViewController = self.storyboard?.instantiateViewController(withIdentifier: "tabbar")
     }
     
 }

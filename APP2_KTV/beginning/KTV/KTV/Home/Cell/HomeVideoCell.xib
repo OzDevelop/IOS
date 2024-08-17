@@ -154,8 +154,8 @@
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
                 <outlet property="channelImageView" destination="ej4-gk-8SB" id="WXx-gB-pIg"/>
-                <outlet property="channelSubtitleLabel" destination="2GA-aY-aqX" id="ltC-xC-Uwe"/>
                 <outlet property="channelTitleLabel" destination="gNu-00-znA" id="Epr-Zx-Cgd"/>
+                <outlet property="channelsubtitleLabel" destination="2GA-aY-aqX" id="AdT-SO-nT2"/>
                 <outlet property="containerView" destination="1Rq-ZH-Gex" id="T1l-6C-sbh"/>
                 <outlet property="hotImageView" destination="Hbu-Ri-j06" id="PGl-zN-vr9"/>
                 <outlet property="subtitleLabel" destination="8Nr-b4-Fhb" id="lyt-nA-91b"/>

@@ -10,6 +10,8 @@ import Foundation
 enum HomeSection: Int, CaseIterable { // CaseIterable을 이용해 섹션 설정 편리하게 가능.
     case header
     case video
+    case ranking
+    case recentWatch
     case recommend
     case footer
 }

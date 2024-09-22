@@ -7,8 +7,8 @@
 
 import UIKit
 
+// HomeRankingContainerCell이랑 동일한 패턴
 protocol HomeRecentWatchContainerCellDelegate: AnyObject {
-    
     func homeRecentWatchContainerCell(_ cell: HomeRecentWatchContainerCell, didSelectItemAt index: Int)
 }
 
@@ -18,8 +18,10 @@ class HomeRecentWatchContainerCell: UITableViewCell {
     static let height: CGFloat = 209
     
     @IBOutlet weak var collectionView: UICollectionView!
+    
     weak var delegate: HomeRecentWatchContainerCellDelegate?
     private var recents: [Home.Recent]?
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         

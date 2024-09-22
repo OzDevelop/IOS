@@ -10,13 +10,17 @@ import UIKit
 class HomeViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
+    private let homeViewModel: HomeViewModel = .init()
     
     override var preferredStatusBarStyle: UIStatusBarStyle { .lightContent } // statusBarStyle을 lightContent로 처리
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask { .portrait } // 회전에 대한 처리
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         self.setupTableView()
+        self.bindViewMode()
+        self.homeViewModel.requestData()
     }
     
     private func setupTableView() {
@@ -41,12 +45,32 @@ class HomeViewController: UIViewController {
             forCellReuseIdentifier: HomeFooterCell.identifier
         )
         
-        self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "empty") // ?? 이거 먼디
+        self.tableView.register(
+            UINib(nibName: HomeRankingContainerCell.identifier,
+                  bundle: nil),
+            forCellReuseIdentifier: HomeRankingContainerCell.identifier
+        )
+        
+        self.tableView.register(
+            UINib(nibName: HomeRecentWatchContainerCell.identifier, bundle: .main),
+            forCellReuseIdentifier: HomeRecentWatchContainerCell.identifier
+        )
+        
+        self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "empty") // 🚒🚒🚒 이거 먼디 🚒🚒🚒
+        
         self.tableView.delegate = self
         self.tableView.dataSource = self
         
+        self.tableView.isHidden = true
     }
     
+    // 🚒🚒🚒 여기 흐름을 잘 모르겠음 🚒🚒🚒
+    private func bindViewMode() {
+        self.homeViewModel.dataChanged = { [weak self] in
+            self?.tableView.isHidden = false
+            self?.tableView.reloadData()
+        }
+    }
 }
 
 // 가독성을 위해 delegate를 extention으로 따로 뺌
@@ -66,11 +90,16 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         case .header:
             return 1
         case .video:
-            return 2
+            return self.homeViewModel.home?.videos.count ?? 0
+        case .ranking:
+            return 1
+        case .recentWatch:
+            return 1
         case .recommend:
             return 1
         case .footer:
             return 1
+        
         }
     }
     
@@ -84,6 +113,10 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
             return HomeHeaderCell.height
         case .video:
             return HomeVideoCell.height
+        case .ranking:
+            return HomeRankingContainerCell.height
+        case .recentWatch:
+            return HomeRecentWatchContainerCell.height
         case .recommend:
             return HomeRecommendContainerCell.height
         case .footer:
@@ -105,17 +138,59 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
                 for: indexPath
             )
         case .video:
-            return tableView.dequeueReusableCell(
+            let cell = tableView.dequeueReusableCell(
                 withIdentifier: HomeVideoCell.identifier,
                 for: indexPath
             )
+            
+            if
+                let cell = cell as? HomeVideoCell,
+                let data = self.homeViewModel.home?.videos[indexPath.row] {
+                cell.setData(data)
+            }
+            
+            return cell
+        case .ranking:
+            let cell = tableView.dequeueReusableCell(
+                withIdentifier: HomeRankingContainerCell.identifier,
+                for: indexPath
+            )
+            
+            if
+                let cell = cell as? HomeRankingContainerCell,
+                let data = self.homeViewModel.home?.rankings {
+                cell.setData(data)
+            }
+            
+            (cell as? HomeRankingContainerCell)?.delegate = self
+            
+            return cell
+        case .recentWatch:
+            let cell = tableView.dequeueReusableCell(
+                withIdentifier: HomeRecentWatchContainerCell.identifier,
+                for: indexPath
+            )
+            
+            if
+                let cell = cell as? HomeRecentWatchContainerCell,
+                let data = self.homeViewModel.home?.recents {
+                cell.delegate = self
+                cell.setData(data)
+            }
+            
+            return cell
         case .recommend:
             let cell = tableView.dequeueReusableCell(
                 withIdentifier: HomeRecommendContainerCell.identifier,
                 for: indexPath
             )
             
-            (cell as? HomeRecommendContainerCell)?.delegate = self
+            if
+                let cell = cell as? HomeRecommendContainerCell,
+                let data = self.homeViewModel.home?.recommends {
+                cell.delegate = self
+                cell.setData(data)
+            }
             
             return cell
         case .footer:
@@ -127,9 +202,21 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     }
 }
 
-// 이렇게 delegate 패턴 사용하는것도 설명 듣기 + 앨런 강의도 있삼
+// 🚒🚒🚒 이렇게 delegate 패턴 사용하는것도 설명 듣기 + 앨런 강의도 있삼 🚒🚒🚒
 extension HomeViewController: HomeRecommendContainerCellDelegate {
     func homeRecommendContainerCell(_ cell: HomeRecommendContainerCell, didSelectItemAt index: Int) {
         print("home recommend cell did select item at \(index)")
+    }
+}
+
+extension HomeViewController: HomeRankingContainerCellDeleate {
+    func homeRankingContainerCell(_ cell: HomeRankingContainerCell, didSelectItemAt index: Int) {
+        print("home ranking did select at \(index)")
+    }
+}
+
+extension HomeViewController: HomeRecentWatchContainerCellDelegate {
+    func homeRecentWatchContainerCell(_ cell: HomeRecentWatchContainerCell, didSelectItemAt index: Int) {
+        print("home recent watch did select at \(index)")
     }
 }

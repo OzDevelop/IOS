@@ -15,7 +15,10 @@ class HomeRecentWatchItemCell: UICollectionViewCell {
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var subtitleLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
+    
     private var imageTask: Task<Void, Never>?
+
+    // DateFormatter는 생성비용이 큼 따라서 static으로 생성해서 사용하는게 좋음
     private static let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "YYMMDD."
